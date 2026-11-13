@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#075e54">
+<title>CYRILLE APK</title>
+<style>
+:root{--bg:#efeae2;--bar:#075e54;--me:#d9fdd3;--other:#fff;--txt:#111b21;--sub:#667781;--accent:#25d366;--field:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#0b141a;--bar:#202c33;--me:#005c4b;--other:#202c33;--txt:#e9edef;--sub:#8696a0;--field:#2a3942;color-scheme:dark}}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--txt);font:16px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0);box-sizing:border-box}
+header{background:var(--bar);color:#fff;padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+header small{font-weight:400;opacity:.75;display:block;font-size:12px}
+#list{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.m{max-width:80%;padding:6px 10px;border-radius:10px;background:var(--other);align-self:flex-start;overflow-wrap:anywhere;box-shadow:0 1px 1px rgba(0,0,0,.15)}
+.m.me{background:var(--me);align-self:flex-end}
+.n{font-size:12px;font-weight:600;color:#128c7e}
+.t{font-size:11px;color:var(--sub);text-align:right;margin-top:2px}
+.pic{display:block;max-width:100%;max-height:300px;border-radius:8px;margin-bottom:4px}
+audio{max-width:100%;height:40px}
+form{display:flex;gap:8px;padding:8px;background:var(--bg)}
+input[type=text]{flex:1;min-width:0;border:0;border-radius:22px;padding:12px 16px;font-size:16px;background:var(--field);color:var(--txt);outline:none}
+button{border:0;border-radius:50%;width:46px;height:46px;background:var(--accent);color:#fff;font-size:20px}
+.ib{background:var(--field);color:var(--txt)}
+.pill{border-radius:22px;width:auto;padding:10px 18px;font-size:16px;height:auto}
+#login{margin:auto;padding:24px;text-align:center;width:min(360px,90%)}
+#login input{width:100%;box-sizing:border-box;margin:12px 0}
+#splash{position:fixed;inset:0;background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;letter-spacing:3px;z-index:9;transition:opacity .5s}
+#call{position:fixed;inset:0;background:#000;z-index:8}
+#peer{width:100%;height:100%;object-fit:cover}
+#me{position:absolute;right:12px;top:calc(12px + env(safe-area-inset-top,0));width:100px;border-radius:10px}
+#hang{position:absolute;left:50%;bottom:calc(30px + env(safe-area-inset-bottom,0));transform:translateX(-50%);background:#e53935;width:64px;height:64px}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+<div id="splash">CYRILLE APK</div>
+<div id="login" class="hide">
+  <h2>CYRILLE APK</h2>
+  <p>Choisis le nom que tes amis verront.</p>
+  <input type="text" id="pseudo" maxlength="24" placeholder="Ton prénom ou pseudo">
+  <button class="pill" id="go">Entrer</button>
+</div>
+<header class="hide" id="head"><div>CYRILLE APK<small id="who"></small></div><button class="ib" id="vc" aria-label="Appel vidéo">📹</button></header>
+<div id="list" class="hide"></div>
+<form id="f" class="hide"><button type="button" class="ib" id="pb" aria-label="Photo">📷</button><input id="pf" type="file" accept="image/*" class="hide"><input type="text" id="txt" placeholder="Écris un message" autocomplete="off"><button type="button" class="ib" id="mic" aria-label="Vocal">🎤</button><button aria-label="Envoyer">➤</button></form>
+<div id="call" class="hide"><video id="peer" autoplay playsinline></video><video id="me" autoplay playsinline muted></video><button id="hang" aria-label="Raccrocher">📞</button></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInAnonymously} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,addDoc,query,orderBy,limitToLast,onSnapshot,doc,setDoc,getDoc,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ====== COLLE ICI TA CONFIGURATION FIREBASE (voir les étapes) ====== */
+const firebaseConfig = {
+  apiKey: "AIzaSyAEFX47mtF62nMD0gnNS2UGu7jae7l6oT4",
+  authDomain: "cyrille-apk.firebaseapp.com",
+  projectId: "cyrille-apk",
+  storageBucket: "cyrille-apk.firebasestorage.app",
+  messagingSenderId: "811786141352",
+  appId: "1:811786141352:web:1dffa9de03c0e8b9b34c9d"
+};
+/* =================================================================== */
+
+const $=i=>document.getElementById(i);
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+let name="",uid="",started=false;
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}};
+const fmt=ts=>{const d=new Date(ts),n=new Date(),h=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);return d.toDateString()===n.toDateString()?h:d.getDate()+"/"+(d.getMonth()+1)+" "+h};
+const send=x=>addDoc(collection(db,"messages"),Object.assign({uid,name,ts:Date.now()},x));
+
+function render(docs){
+  const l=$("list"),near=l.scrollHeight-l.scrollTop-l.clientHeight<120;
+  l.textContent="";
+  if(!docs.length){const s=document.createElement("div");s.style.cssText="text-align:center;color:var(--sub)";s.textContent="Aucun message. Dis bonjour ! 👋";l.appendChild(s);return}
+  docs.forEach(x=>{
+    const d=x.data(),mine=d.uid===uid,m=document.createElement("div");
+    m.className="m"+(mine?" me":"");
+    if(!mine){const n=document.createElement("div");n.className="n";n.textContent=d.name||"Ami";m.appendChild(n)}
+    if(d.img){const im=document.createElement("img");im.className="pic";im.src=d.img;m.appendChild(im)}
+    if(d.audio){const au=document.createElement("audio");au.controls=true;au.src=d.audio;m.appendChild(au)}
+    if(d.call){const b=document.createElement("button");b.className="pill";b.textContent=mine?"📹 Tu as lancé un appel":"📹 Rejoindre l’appel";b.disabled=mine;b.onclick=()=>joinCall(d.call).catch(()=>{alert("Appel impossible ou terminé.");hang()});m.appendChild(b)}
+    if(d.text){const t=document.createElement("div");t.textContent=d.text;m.appendChild(t)}
+    const h=document.createElement("div");h.className="t";h.textContent=fmt(d.ts);m.appendChild(h);
+    l.appendChild(m);
+  });
+  if(near||!started)l.scrollTop=l.scrollHeight;
+  started=true;
+}
+
+async function start(){
+  $("login").classList.add("hide");
+  ["head","list","f"].forEach(i=>$(i).classList.remove("hide"));
+  $("who").textContent="Connecté : "+name;
+  try{
+    await signInAnonymously(auth);uid=auth.currentUser.uid;
+    onSnapshot(query(collection(db,"messages"),orderBy("ts"),limitToLast(200)),s=>render(s.docs),()=>{$("list").textContent="Connexion impossible. Vérifie la configuration Firebase."});
+  }catch(e){$("list").textContent="Connexion impossible. Vérifie la configuration Firebase."}
+}
+const enter=()=>{const v=$("pseudo").value.trim();if(!v)return;name=v;ls("pseudo",v);start()};
+$("go").onclick=enter;
+$("pseudo").onkeydown=e=>{if(e.key==="Enter")enter()};
+$("f").onsubmit=async e=>{
+  e.preventDefault();
+  const t=$("txt").value.trim();if(!t)return;
+  $("txt").value="";
+  try{await send({text:t.slice(0,2000)})}catch(err){$("txt").value=t;alert("Message non envoyé.")}
+};
+
+/* Photos */
+const pic=file=>new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const s=Math.min(1,800/Math.max(i.width,i.height));let q=.7;const c=document.createElement("canvas");c.width=i.width*s;c.height=i.height*s;c.getContext("2d").drawImage(i,0,0,c.width,c.height);let u=c.toDataURL("image/jpeg",q);while(u.length>600000&&q>.2){q-=.1;u=c.toDataURL("image/jpeg",q)}u.length>700000?ko():ok(u)};i.onerror=ko;i.src=r.result};r.onerror=ko;r.readAsDataURL(file)});
+$("pb").onclick=()=>$("pf").click();
+$("pf").onchange=async function(){const f=this.files[0];this.value="";if(!f)return;try{await send({img:await pic(f)})}catch(e){alert("Photo non envoyée.")}};
+
+/* Vocaux (60 secondes maximum) */
+let rec=null,chunks=[];
+$("mic").onclick=async()=>{
+  if(rec){rec.stop();return}
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({audio:true});
+    const r0=new MediaRecorder(st,{audioBitsPerSecond:24000});rec=r0;chunks=[];
+    r0.ondataavailable=e=>chunks.push(e.data);
+    r0.onstop=()=>{st.getTracks().forEach(t=>t.stop());$("mic").textContent="🎤";$("mic").style.background="";rec=null;const fr=new FileReader();fr.onload=()=>{if(fr.result.length>700000){alert("Vocal trop long.");return}send({audio:fr.result}).catch(()=>alert("Vocal non envoyé."))};fr.readAsDataURL(new Blob(chunks,{type:r0.mimeType}))};
+    r0.start();$("mic").textContent="⏹";$("mic").style.background="#e53935";
+    setTimeout(()=>{if(rec===r0&&r0.state==="recording")r0.stop()},60000);
+  }catch(e){rec=null;alert("Micro indisponible ou refusé.")}
+};
+
+/* Appel vidéo (WebRTC, signalisation par Firestore) */
+let pc,stream;
+async function media(){stream=await navigator.mediaDevices.getUserMedia({video:true,audio:true});$("me").srcObject=stream;$("call").classList.remove("hide")}
+function mk(){pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});stream.getTracks().forEach(t=>pc.addTrack(t,stream));pc.ontrack=e=>{$("peer").srcObject=e.streams[0]}}
+function hang(){try{pc&&pc.close()}catch(e){}stream&&stream.getTracks().forEach(t=>t.stop());$("call").classList.add("hide")}
+$("hang").onclick=hang;
+$("vc").onclick=async()=>{
+  try{
+    await media();mk();
+    const ref=doc(collection(db,"calls")),cand=n=>collection(ref,n);
+    let rd;const ready=new Promise(r=>rd=r);
+    pc.onicecandidate=e=>e.candidate&&addDoc(cand("a"),e.candidate.toJSON());
+    const o=await pc.createOffer();await pc.setLocalDescription(o);
+    await setDoc(ref,{offer:{type:o.type,sdp:o.sdp}});
+    await send({call:ref.id});
+    onSnapshot(ref,async s=>{const d=s.data();if(d&&d.answer&&!pc.currentRemoteDescription){await pc.setRemoteDescription(d.answer);rd()}});
+    onSnapshot(cand("b"),s=>s.docChanges().forEach(c=>c.type==="added"&&ready.then(()=>pc.addIceCandidate(c.doc.data()))));
+  }catch(e){alert("Caméra ou micro indisponible.");hang()}
+};
+async function joinCall(id){
+  await media();mk();
+  const ref=doc(db,"calls",id),d=(await getDoc(ref)).data();
+  pc.onicecandidate=e=>e.candidate&&addDoc(collection(ref,"b"),e.candidate.toJSON());
+  await pc.setRemoteDescription(d.offer);
+  const a=await pc.createAnswer();await pc.setLocalDescription(a);
+  await updateDoc(ref,{answer:{type:a.type,sdp:a.sdp}});
+  onSnapshot(collection(ref,"a"),s=>s.docChanges().forEach(c=>c.type==="added"&&pc.addIceCandidate(c.doc.data())));
+}
+
+$("pseudo").value=ls("pseudo")||"";
+setTimeout(()=>{$("splash").style.opacity=0;setTimeout(()=>{$("splash").remove();$("login").classList.remove("hide")},500)},1600);
+</script>
+</body>
+</html>
