@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#075e54">
-<title>CYRILLE APK</title>
+<title>AfriQuiz</title>
 <style>
 :root{--bg:#efeae2;--bar:#075e54;--me:#d9fdd3;--other:#fff;--txt:#111b21;--sub:#667781;--accent:#25d366;--field:#fff}
 @media (prefers-color-scheme:dark){:root{--bg:#0b141a;--bar:#202c33;--me:#005c4b;--other:#202c33;--txt:#e9edef;--sub:#8696a0;--field:#2a3942;color-scheme:dark}}
@@ -16,7 +16,6 @@ header small{font-weight:400;opacity:.85;display:block;font-size:12px}
 #list,#convs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
 .m{max-width:80%;padding:6px 10px;border-radius:10px;background:var(--other);align-self:flex-start;overflow-wrap:anywhere;box-shadow:0 1px 1px rgba(0,0,0,.15)}
 .m.me{background:var(--me);align-self:flex-end}
-.n{font-size:12px;font-weight:600;color:#128c7e}
 .t{font-size:11px;color:var(--sub);text-align:right;margin-top:2px}
 .pic{display:block;max-width:100%;max-height:300px;border-radius:8px;margin-bottom:4px}
 audio{max-width:100%;height:40px}
@@ -26,10 +25,11 @@ button{border:0;border-radius:50%;width:46px;height:46px;background:var(--accent
 .ib{background:var(--field);color:var(--txt)}
 header .ib{background:rgba(255,255,255,.15);color:#fff}
 .pill{border-radius:22px;width:auto;height:auto;padding:10px 18px;font-size:16px}
-.row{display:block;width:100%;height:auto;border-radius:12px;text-align:left;padding:14px 16px;background:var(--other);color:var(--txt);font-size:16px;margin:0 0 6px}
-.pad{padding:8px 12px}
+.row{display:block;width:100%;height:auto;border-radius:12px;text-align:left;padding:12px 16px;background:var(--other);color:var(--txt);font-size:16px;margin:0 0 6px}
+.row small{display:block;color:var(--sub);font-size:13px;margin-top:2px;font-weight:400}
 #auth{margin:auto;padding:24px;text-align:center;width:min(360px,90%)}
 #auth input{width:100%;box-sizing:border-box;margin:6px 0}
+#auth p{color:var(--sub);margin:0 0 10px}
 #err{color:#e53935;min-height:20px;font-size:14px}
 .lnk{background:none;color:var(--sub);width:auto;height:auto;font-size:15px;margin-top:10px;text-decoration:underline}
 #splash{position:fixed;inset:0;background:var(--bar);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800;letter-spacing:3px;z-index:9;transition:opacity .5s}
@@ -43,21 +43,20 @@ header .ib{background:rgba(255,255,255,.15);color:#fff}
 </style>
 </head>
 <body>
-<div id="splash">CYRILLE APK</div>
+<div id="splash">AfriQuiz</div>
 
 <div id="auth" class="hide">
-  <h2>CYRILLE APK</h2>
+  <h2>AfriQuiz</h2>
+  <p>Espace réservé à l’administrateur.</p>
   <input type="text" id="pseudo" maxlength="24" placeholder="Pseudo" autocomplete="username" autocapitalize="none">
   <input type="password" id="pwd" placeholder="Mot de passe (6 caractères minimum)" autocomplete="current-password">
   <div id="err"></div>
   <button class="pill" id="login">Se connecter</button><br>
-  <button class="lnk" id="signup">Créer un compte</button>
+  <button class="lnk" id="signup">Créer le compte administrateur</button><br><button class="lnk" id="retour">← Retour à la discussion</button>
 </div>
 
 <div id="home" class="scr hide">
-  <header><div>CYRILLE APK<small id="who"></small></div><button class="pill ib" id="out">Quitter</button></header>
-  <div class="pad"><input type="text" id="q" placeholder="🔍 Chercher un ami par pseudo" autocomplete="off" autocapitalize="none" style="width:100%;box-sizing:border-box"></div>
-  <div id="res" class="pad"></div>
+  <header><div>AfriQuiz<small id="who"></small></div><button class="pill ib" id="out">Quitter</button></header>
   <div id="convs"></div>
 </div>
 
@@ -71,8 +70,8 @@ header .ib{background:rgba(255,255,255,.15);color:#fff}
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,collection,addDoc,query,orderBy,limitToLast,limit,where,onSnapshot,doc,setDoc,getDoc,getDocs,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signInAnonymously,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,addDoc,query,orderBy,limitToLast,limit,where,onSnapshot,doc,setDoc,getDoc,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAEFX47mtF62nMD0gnNS2UGu7jae7l6oT4",
@@ -82,6 +81,9 @@ const firebaseConfig = {
   messagingSenderId: "811786141352",
   appId: "1:811786141352:web:1dffa9de03c0e8b9b34c9d"
 };
+/* Compte principal : tous les visiteurs (anonymes) écrivent uniquement à ce compte. */
+const OWNER = "afriquiz";
+
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=i=>document.getElementById(i);
 const SCR=["auth","home","chat"];
@@ -89,52 +91,88 @@ const show=id=>SCR.forEach(s=>$(s).classList.toggle("hide",s!==id));
 const fmt=ts=>{const d=new Date(ts),n=new Date(),h=("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);return d.toDateString()===n.toDateString()?h:d.getDate()+"/"+(d.getMonth()+1)+" "+h};
 
 let me=null,cur=null,entering=false,started=false,peerSeen=0;
-let unsubM=null,unsubP=null,unsubC=null,tick=null,tq=null;
+let unsubM=null,unsubP=null,unsubC=null,unsubO=null,tick=null,online=[];
 
 /* ===== Connexion ===== */
 const clean=p=>p.trim().toLowerCase().replace(/[^a-z0-9._-]/g,"");
-const mail=k=>k+"@cyrille-apk.app";
+const mail=k=>k+"@afriquiz.app";
 const msg=c=>({"auth/email-already-in-use":"Ce pseudo existe déjà.","auth/weak-password":"Mot de passe trop court (6 caractères minimum).","auth/operation-not-allowed":"Connexion par mot de passe non activée dans Firebase.","auth/invalid-credential":"Pseudo ou mot de passe incorrect.","auth/wrong-password":"Pseudo ou mot de passe incorrect.","auth/user-not-found":"Pseudo ou mot de passe incorrect.","auth/network-request-failed":"Pas de connexion internet."}[c]||"Erreur, réessaie.");
 
 async function go(create){
   const name=$("pseudo").value.trim(),k=clean(name),p=$("pwd").value;
   $("err").textContent="";
-  if(!k){$("err").textContent="Choisis un pseudo (lettres et chiffres).";return}
+  if(k!==OWNER){$("err").textContent="Accès réservé à l’administrateur.";return}
   if(p.length<6){$("err").textContent="Mot de passe : 6 caractères minimum.";return}
   entering=true;
   try{
     if(create){
       const c=await createUserWithEmailAndPassword(auth,mail(k),p);
       await setDoc(doc(db,"users",c.user.uid),{name,key:k,lastSeen:Date.now()});
-      enter(c.user.uid,name);
+      enter(c.user.uid,"AfriQuiz",true);
     }else{
       const c=await signInWithEmailAndPassword(auth,mail(k),p);
       const s=await getDoc(doc(db,"users",c.user.uid));
-      enter(c.user.uid,s.exists()?s.data().name:name);
+      enter(c.user.uid,"AfriQuiz",true);
     }
   }catch(e){$("err").textContent=msg(e.code)}
   entering=false;
 }
 $("login").onclick=()=>go(false);
 $("signup").onclick=()=>go(true);
+$("retour").onclick=()=>{location.hash="";location.reload()};
 $("pwd").onkeydown=e=>{if(e.key==="Enter")go(false)};
 
+const admin=()=>location.hash==="#admin";
 onAuthStateChanged(auth,async u=>{
   if(entering)return;
-  if(!u||u.isAnonymous){show("auth");return}
-  const s=await getDoc(doc(db,"users",u.uid));
-  if(!s.exists()){show("auth");return}
-  enter(u.uid,s.data().name);
+  if(!u){
+    if(admin()){show("auth");return}
+    try{await signInAnonymously(auth)}
+    catch(e){show("chat");$("title").textContent="AfriQuiz";$("status").classList.add("hide");$("list").textContent="Connexion impossible. Vérifie ta connexion internet puis recharge la page."}
+    return;
+  }
+  if(u.isAnonymous){
+    if(admin()){show("auth");return}
+    let name;
+    try{
+      const s=await getDoc(doc(db,"users",u.uid));
+      if(s.exists())name=s.data().name;
+      else{name="Visiteur "+(1000+Math.floor(Math.random()*9000));await setDoc(doc(db,"users",u.uid),{name,key:"visiteur",lastSeen:Date.now()})}
+    }catch(e){name="Visiteur"}
+    enter(u.uid,name,false);
+    return;
+  }
+  if(u.email!==mail(OWNER)){await signOut(auth);return}
+  enter(u.uid,"AfriQuiz",true);
 });
 
-$("out").onclick=async()=>{cleanup();if(unsubC)unsubC();me=null;await signOut(auth);$("pwd").value="";show("auth")};
+async function logout(){
+  cleanup();if(unsubC)unsubC();if(unsubO){unsubO();unsubO=null}
+  online=[];me=null;cur=null;
+  location.hash="#admin";
+  await signOut(auth);$("pwd").value="";show("auth");
+}
+$("out").onclick=logout;
 
-/* ===== Présence (en ligne) ===== */
+/* ===== Présence ===== */
 const beat=()=>{if(me&&!document.hidden)updateDoc(doc(db,"users",me.uid),{lastSeen:Date.now()}).catch(()=>{})};
 setInterval(beat,90000);
-document.addEventListener("visibilitychange",beat);
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){if(unsubO){unsubO();unsubO=null}}
+  else{beat();if(me&&me.owner)watchOnline()}
+});
+function watchOnline(){
+  if(unsubO||!me||!me.owner)return;
+  unsubO=onSnapshot(query(collection(db,"users"),where("lastSeen",">",Date.now()-600000)),s=>{online=s.docs.map(d=>({id:d.id,...d.data()}));paintOnline()},()=>{});
+}
+function paintOnline(){
+  if(!me||!me.owner)return;
+  const n=online.filter(u=>u.id!==me.uid&&Date.now()-(u.lastSeen||0)<150000).length;
+  $("who").textContent="Connecté : "+me.name+" · "+n+" en ligne";
+}
+setInterval(paintOnline,30000);
 function paint(){
-  if(!cur||!cur.peerId)return;
+  if(!cur)return;
   const s=(Date.now()-peerSeen)/1000,on=peerSeen&&s<150;
   $("dot").classList.toggle("on",!!on);
   if(!peerSeen){$("st").textContent="Hors ligne";return}
@@ -143,57 +181,45 @@ function paint(){
   $("st").textContent="En ligne il y a "+(m<60?m+" min":m<1440?Math.round(m/60)+" h":Math.round(m/1440)+" j");
 }
 
-/* ===== Accueil, recherche, conversations ===== */
-function enter(uid,name){
+/* ===== Entrée ===== */
+function enter(uid,name,owner){
   if(me&&me.uid===uid)return;
-  me={uid,name};beat();
-  $("who").textContent="Connecté : "+name;
-  show("home");
-  if(unsubC)unsubC();
-  unsubC=onSnapshot(query(collection(db,"chats"),where("members","array-contains",uid)),s=>{
-    const box=$("convs");box.textContent="";
-    const g=document.createElement("button");g.className="row";g.textContent="👥 Groupe des amis";g.onclick=()=>openChat(null,"Groupe des amis",null);box.appendChild(g);
-    s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.last||0)-(a.last||0)).forEach(c=>{
-      const pid=c.members.find(x=>x!==uid),pn=(c.names&&c.names[pid])||"Ami";
-      const b=document.createElement("button");b.className="row";b.textContent="💬 "+pn;b.onclick=()=>openChat(c.id,pn,pid);box.appendChild(b);
-    });
-  });
-}
-$("q").oninput=()=>{
-  clearTimeout(tq);
-  tq=setTimeout(async()=>{
-    const k=clean($("q").value),box=$("res");box.textContent="";
-    if(!k)return;
-    try{
-      const s=await getDocs(query(collection(db,"users"),where("key",">=",k),where("key","<=",k+"\uf8ff"),limit(8)));
-      let n=0;
-      s.docs.filter(d=>d.id!==me.uid).forEach(d=>{
-        n++;const b=document.createElement("button");b.className="row";b.textContent="➕ "+d.data().name;
-        b.onclick=()=>startPrivate(d.id,d.data().name);box.appendChild(b);
+  me={uid,name,owner};
+  beat();
+  if(me.owner){
+    $("who").textContent="Connecté : "+name;
+    watchOnline();show("home");
+    if(unsubC)unsubC();
+    unsubC=onSnapshot(collection(db,"chats"),s=>{
+      const box=$("convs");box.textContent="";
+      const l=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.last||0)-(a.last||0));
+      if(!l.length){const t=document.createElement("div");t.style.cssText="text-align:center;color:var(--sub);padding:20px";t.textContent="Aucune conversation pour l’instant.";box.appendChild(t)}
+      l.forEach(c=>{
+        const b=document.createElement("button");b.className="row";
+        b.appendChild(document.createTextNode("💬 "+(c.name||"Ami")));
+        const sm=document.createElement("small");sm.textContent=(c.lastText||"")+(c.last?" · "+fmt(c.last):"");b.appendChild(sm);
+        b.onclick=()=>openChat(c.id,c.name||"Ami",c.id);box.appendChild(b);
       });
-      if(!n){const t=document.createElement("div");t.style.color="var(--sub)";t.textContent="Aucun ami trouvé avec ce pseudo.";box.appendChild(t)}
-    }catch(e){box.textContent="Recherche impossible."}
-  },400);
-};
-async function startPrivate(pid,pn){
-  const id=[me.uid,pid].sort().join("_");
-  await setDoc(doc(db,"chats",id),{members:[me.uid,pid],names:{[me.uid]:me.name,[pid]:pn},last:Date.now()},{merge:true});
-  $("q").value="";$("res").textContent="";
-  openChat(id,pn,pid);
+    },()=>{$("convs").textContent="Impossible de charger les conversations."});
+  }else{
+    openChat(uid,"AfriQuiz","owner");
+  }
 }
 
 /* ===== Discussion ===== */
 function cleanup(){if(unsubM)unsubM();if(unsubP)unsubP();clearInterval(tick);unsubM=unsubP=null}
-function openChat(id,title,peerId){
+function openChat(id,title,peer){
   cleanup();
-  cur={id,peerId,ref:id?collection(db,"chats",id,"messages"):collection(db,"messages")};
+  cur={id,peer,ref:collection(db,"chats",id,"messages")};
   started=false;peerSeen=0;
   $("title").textContent=title;$("list").textContent="";
-  $("status").classList.toggle("hide",!peerId);
-  if(peerId){
-    unsubP=onSnapshot(doc(db,"users",peerId),s=>{peerSeen=(s.data()||{}).lastSeen||0;paint()});
-    tick=setInterval(paint,30000);
+  $("back").classList.toggle("hide",!me.owner);$("status").classList.remove("hide");
+  if(peer==="owner"){
+    unsubP=onSnapshot(query(collection(db,"users"),where("key","==",OWNER),limit(1)),s=>{const d=s.docs[0];peerSeen=d?(d.data().lastSeen||0):0;paint()});
+  }else{
+    unsubP=onSnapshot(doc(db,"users",peer),s=>{peerSeen=(s.data()||{}).lastSeen||0;paint()});
   }
+  paint();tick=setInterval(paint,30000);
   unsubM=onSnapshot(query(cur.ref,orderBy("ts"),limitToLast(50)),s=>render(s.docs),()=>{$("list").textContent="Impossible de charger les messages."});
   show("chat");
 }
@@ -202,11 +228,10 @@ $("back").onclick=()=>{cleanup();cur=null;show("home")};
 function render(docs){
   const l=$("list"),near=l.scrollHeight-l.scrollTop-l.clientHeight<120;
   l.textContent="";
-  if(!docs.length){const s=document.createElement("div");s.style.cssText="text-align:center;color:var(--sub)";s.textContent="Aucun message. Dis bonjour ! 👋";l.appendChild(s);return}
+  if(!docs.length){const s=document.createElement("div");s.style.cssText="text-align:center;color:var(--sub)";s.textContent=me.owner?"Aucun message.":"Aucun message. Écris-nous ton message ! 👋";l.appendChild(s);return}
   docs.forEach(x=>{
     const d=x.data(),mine=d.uid===me.uid,m=document.createElement("div");
     m.className="m"+(mine?" me":"");
-    if(!mine&&!cur.peerId){const n=document.createElement("div");n.className="n";n.textContent=d.name||"Ami";m.appendChild(n)}
     if(d.img){const im=document.createElement("img");im.className="pic";im.src=d.img;m.appendChild(im)}
     if(d.audio){const au=document.createElement("audio");au.controls=true;au.src=d.audio;m.appendChild(au)}
     if(d.call){const b=document.createElement("button");b.className="pill";b.textContent=mine?"📹 Tu as lancé un appel":"📹 Rejoindre l’appel";b.disabled=mine;b.onclick=()=>joinCall(d.call).catch(()=>{alert("Appel impossible ou terminé.");hang()});m.appendChild(b)}
@@ -219,7 +244,9 @@ function render(docs){
 }
 const send=async x=>{
   await addDoc(cur.ref,Object.assign({uid:me.uid,name:me.name,ts:Date.now()},x));
-  if(cur.id)setDoc(doc(db,"chats",cur.id),{last:Date.now()},{merge:true}).catch(()=>{});
+  const meta={last:Date.now(),lastText:x.text?x.text.slice(0,60):x.img?"📷 Photo":x.audio?"🎤 Vocal":"📹 Appel"};
+  if(!me.owner)meta.name=me.name;
+  setDoc(doc(db,"chats",cur.id),meta,{merge:true}).catch(()=>{});
 };
 $("f").onsubmit=async e=>{
   e.preventDefault();
