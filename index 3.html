@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#102a43">
+<title>Cash Out Investissement</title>
+<style>
+:root{--nv:#102a43;--bl:#1f4e79;--ac:#2f6fdb;--gd:#c9a227;--bg:#f4f6f9;--txt:#1a2433;--sub:#5b6b7f;--ln:#dde4ec;--err:#c0392b}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+.scr{min-height:100vh;display:flex;flex-direction:column}
+.hero{flex:1;background:linear-gradient(160deg,#0b1f33,var(--bl));color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px 24px}
+.mono{width:74px;height:74px;border-radius:20px;border:2px solid var(--gd);color:var(--gd);display:grid;place-items:center;font-weight:800;font-size:28px;letter-spacing:2px;margin-bottom:18px;background:rgba(255,255,255,.06)}
+.hero h1{font-size:25px;line-height:1.3;margin:0 0 10px;letter-spacing:.5px}
+.hero h1 span{color:var(--gd)}
+.hero p{margin:0 0 28px;opacity:.9}
+.btn{display:block;width:100%;max-width:340px;border:0;border-radius:12px;padding:15px 18px;font-size:17px;font-weight:700;margin:8px auto;cursor:pointer}
+.btn.main{background:var(--ac);color:#fff}
+.btn.line{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.8)}
+.form{width:100%;max-width:420px;margin:0 auto;padding:24px 20px}
+.form h2{margin:6px 0 4px;color:var(--nv)}
+.form p{margin:0 0 14px;color:var(--sub)}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+input,select{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid var(--ln);border-radius:10px;background:#fff;color:var(--txt);outline:none}
+input:focus,select:focus{border-color:var(--ac)}
+.two{display:flex;gap:10px}.two>div{flex:1;min-width:0}
+.err{color:var(--err);min-height:22px;font-size:14px;margin-top:10px}
+.lnk{background:none;border:0;color:var(--ac);font-size:15px;text-decoration:underline;margin-top:12px;cursor:pointer}
+header{display:flex;background:var(--nv);color:#fff;padding:12px 14px;align-items:center;justify-content:space-between;gap:10px;font-weight:700}
+.hl{display:flex;align-items:center;gap:12px}
+header button{background:rgba(255,255,255,.12);color:#fff;border:0;border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer;white-space:nowrap}
+.ttl{letter-spacing:1.5px;font-weight:800}
+main{padding:20px 16px;max-width:560px;width:100%;margin:0 auto}
+.card{background:#fff;border-radius:16px;padding:20px;border:1px solid var(--ln);box-shadow:0 2px 10px rgba(16,42,67,.06)}
+.hello{color:var(--sub);font-size:14px}
+.nom{font-size:24px;font-weight:800;color:var(--nv);margin:2px 0}
+.pays{color:var(--sub)}
+.sep{height:1px;background:var(--ln);margin:18px 0}
+.row{display:flex;align-items:center;justify-content:space-between}
+.row span{font-weight:700;color:var(--sub);text-transform:uppercase;font-size:13px;letter-spacing:1px}
+#eye{background:#eef3fb;border:0;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--nv);padding:0}
+.solde{font-size:36px;font-weight:800;margin-top:6px;color:var(--txt)}
+.note{margin-top:16px;font-size:12px;color:var(--sub);text-align:center}
+.ov{position:fixed;inset:0;background:rgba(10,20,33,.5);z-index:20}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:320px;background:#fff;z-index:21;transform:translateX(-105%);transition:transform .25s;box-shadow:4px 0 20px rgba(0,0,0,.25);padding-top:env(safe-area-inset-top,0)}
+.drawer.open{transform:none}
+.dh{background:var(--nv);color:#fff;font-weight:800;padding:18px 20px;letter-spacing:1.5px}
+.drawer button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid #edf1f6;padding:16px 20px;font-size:16px;color:var(--txt);cursor:pointer}
+.drawer button:active{background:#eef3fb}
+h2.vt{margin:4px 0 6px;color:var(--nv)}
+.sub{color:var(--sub);font-size:13px;margin:0 0 14px}
+.card h3{margin:0 0 6px;color:var(--nv);font-size:17px}
+.card p{margin:0 0 12px}
+.card ol,.card ul{margin:0 0 12px;padding-left:20px}
+.card li{margin-bottom:6px}
+.stack{display:grid;gap:14px}
+.grid{display:grid;gap:16px}
+.pc{background:#fff;border-radius:16px;overflow:hidden;border:1px solid var(--ln);box-shadow:0 2px 10px rgba(16,42,67,.08)}
+.pc svg{display:block;width:100%;height:auto}
+.pr{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;gap:8px}
+.pr span{font-weight:700;color:var(--nv)}
+.pr b{background:#eef3fb;color:var(--nv);border-radius:20px;padding:6px 12px;font-size:14px;white-space:nowrap}
+.empty{text-align:center;color:var(--sub);padding:18px 0}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="welcome" class="scr hide">
+  <div class="hero">
+    <div class="mono">CO</div>
+    <h1>BIENVENUE SUR<br><span>CASH OUT INVESTISSEMENT</span></h1>
+    <p>Créez votre compte ou connectez-vous</p>
+    <button class="btn main" id="goSignup">Créer votre compte</button>
+    <button class="btn line" id="goLogin">Se connecter</button>
+  </div>
+</div>
+
+<div id="signup" class="scr hide">
+  <form class="form" id="fSignup" autocomplete="on">
+    <h2>Créer votre compte</h2>
+    <p>Remplissez vos informations.</p>
+    <div class="two">
+      <div><label for="prenom">Prénom</label><input id="prenom" type="text" autocomplete="given-name" required></div>
+      <div><label for="nom">Nom</label><input id="nom" type="text" autocomplete="family-name" required></div>
+    </div>
+    <label for="pays">Pays</label>
+    <select id="pays" required></select>
+    <label for="email">Adresse e-mail</label>
+    <input id="email" type="email" autocomplete="email" autocapitalize="none" required>
+    <label for="pwd">Mot de passe (6 caractères minimum)</label>
+    <input id="pwd" type="password" autocomplete="new-password" required>
+    <div class="err" id="errS"></div>
+    <button class="btn main" type="submit" id="bS" style="max-width:none">Créer le compte</button>
+    <div style="text-align:center"><button type="button" class="lnk" id="s2l">J’ai déjà un compte</button> · <button type="button" class="lnk" id="s2w">← Retour</button></div>
+  </form>
+</div>
+
+<div id="login" class="scr hide">
+  <form class="form" id="fLogin" autocomplete="on">
+    <h2>Se connecter</h2>
+    <p>Entrez votre e-mail et votre mot de passe.</p>
+    <label for="email2">Adresse e-mail</label>
+    <input id="email2" type="email" autocomplete="email" autocapitalize="none" required>
+    <label for="pwd2">Mot de passe</label>
+    <input id="pwd2" type="password" autocomplete="current-password" required>
+    <div class="err" id="errL"></div>
+    <button class="btn main" type="submit" id="bL" style="max-width:none">Se connecter</button>
+    <div style="text-align:center"><button type="button" class="lnk" id="l2s">Créer un compte</button> · <button type="button" class="lnk" id="l2w">← Retour</button></div>
+  </form>
+</div>
+
+<div id="home" class="scr hide">
+  <header>
+    <div class="hl"><button id="menuBtn" aria-label="Ouvrir le menu">☰ Menu</button><span class="ttl">CASH OUT</span></div>
+    <button id="out">Quitter</button>
+  </header>
+  <div id="ov" class="ov hide"></div>
+  <nav id="drawer" class="drawer">
+    <div class="dh">MENU</div>
+    <button data-v="home">🏠 Accueil</button>
+    <button data-v="info">ℹ️ Informations sur l’investissement Cash Out</button>
+    <button data-v="cartes">💳 Cartes disponibles</button>
+    <button data-v="retrait">💸 Retrait</button>
+    <button data-v="histo">🧾 Historique des retraits</button>
+  </nav>
+  <main>
+    <section id="v-home">
+      <div class="card">
+        <div class="hello">Bonjour 👋</div>
+        <div class="nom" id="hNom"></div>
+        <div class="pays" id="hPays"></div>
+        <div class="sep"></div>
+        <div class="row"><span>Solde</span>
+          <button id="eye" aria-label="Afficher ou masquer le solde" title="Afficher / masquer"></button>
+        </div>
+        <div class="solde" id="hSolde">0 FCFA</div>
+      </div>
+      <div class="note">Projet de classe : solde fictif (simulation), aucun argent réel.</div>
+    </section>
+
+    <section id="v-info" class="hide">
+      <h2 class="vt">Informations sur l’investissement Cash Out</h2>
+      <p class="sub">Exercice pour le cours d’économie.</p>
+      <div class="stack">
+        <div class="card">
+          <h3>Qu’est-ce que Cash Out Investissement ?</h3>
+          <p>Un site de simulation créé par des élèves pour comprendre le vocabulaire de l’investissement : capital, prix d’un produit, solde et retrait. Toutes les données affichées sont inventées.</p>
+        </div>
+        <div class="card">
+          <h3>Comment utiliser la simulation</h3>
+          <ol>
+            <li>Créez votre compte avec votre pays et votre e-mail.</li>
+            <li>Consultez votre solde fictif sur l’accueil.</li>
+            <li>Découvrez les cartes disponibles et leurs prix inventés.</li>
+            <li>Observez les pages Retrait et Historique des retraits.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>À retenir</h3>
+          <ul>
+            <li>Investir comporte des risques : aucun gain n’est garanti.</li>
+            <li>Ce site ne gère aucun argent réel : pas de dépôt, pas de paiement.</li>
+            <li>Ne communiquez jamais votre mot de passe.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="v-cartes" class="hide">
+      <h2 class="vt">Cartes disponibles</h2>
+      <p class="sub">5 cartes inventées pour l’exercice. Prix fictifs.</p>
+      <div class="grid" id="listCartes"></div>
+      <div class="note">Cartes et prix fictifs : aucun paiement n’est possible sur ce site.</div>
+    </section>
+
+    <section id="v-retrait" class="hide">
+      <h2 class="vt">Retrait</h2>
+      <div class="card">
+        <div class="hello">Solde disponible</div>
+        <div class="solde" id="rSolde">0 FCFA</div>
+        <div class="sep"></div>
+        <p style="margin:0">Simulation uniquement : ce site ne gère aucun argent réel, donc aucun retrait n’est possible.</p>
+      </div>
+    </section>
+
+    <section id="v-histo" class="hide">
+      <h2 class="vt">Historique des retraits</h2>
+      <div class="card">
+        <div class="empty">Aucun retrait pour le moment.</div>
+        <div class="note" style="margin-top:0">Simulation : aucune opération réelle n’est enregistrée.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,setDoc,getDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAEFX47mtF62nMD0gnNS2UGu7jae7l6oT4",
+  authDomain: "cyrille-apk.firebaseapp.com",
+  projectId: "cyrille-apk",
+  storageBucket: "cyrille-apk.firebasestorage.app",
+  messagingSenderId: "811786141352",
+  appId: "1:811786141352:web:1dffa9de03c0e8b9b34c9d"
+};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=i=>document.getElementById(i);
+const SCR=["welcome","signup","login","home"];
+const show=id=>{SCR.forEach(s=>$(s).classList.toggle("hide",s!==id));window.scrollTo(0,0)};
+
+const PAYS=[["🇨🇮","Côte d’Ivoire"],["🇧🇫","Burkina Faso"],["🇨🇲","Cameroun"],["🇬🇭","Ghana"],["🇹🇬","Togo"],["🇲🇱","Mali"],["🇸🇳","Sénégal"],["🇨🇩","Congo Kinshasa"],["🇨🇬","Congo Brazzaville"]];
+const sel=$("pays");
+sel.appendChild(new Option("Choisissez votre pays","")).disabled=true;
+PAYS.forEach(p=>sel.appendChild(new Option(p[0]+" "+p[1],p[1])));
+sel.selectedIndex=0;
+const flag=n=>(PAYS.find(p=>p[1]===n)||[""])[0];
+
+const msg=c=>({
+  "auth/email-already-in-use":"Cet e-mail est déjà utilisé. Connectez-vous.",
+  "auth/invalid-email":"Adresse e-mail invalide.",
+  "auth/weak-password":"Mot de passe trop court (6 caractères minimum).",
+  "auth/invalid-credential":"E-mail ou mot de passe incorrect.",
+  "auth/wrong-password":"E-mail ou mot de passe incorrect.",
+  "auth/user-not-found":"E-mail ou mot de passe incorrect.",
+  "auth/too-many-requests":"Trop d’essais. Réessayez dans quelques minutes.",
+  "auth/network-request-failed":"Pas de connexion internet.",
+  "auth/operation-not-allowed":"Connexion par e-mail non activée dans Firebase."
+}[c]||"Une erreur est survenue. Réessayez.");
+
+/* Navigation (écrans d’accueil) */
+$("goSignup").onclick=()=>show("signup");
+$("goLogin").onclick=()=>show("login");
+$("s2l").onclick=()=>show("login");
+$("l2s").onclick=()=>show("signup");
+$("s2w").onclick=()=>show("welcome");
+$("l2w").onclick=()=>show("welcome");
+
+/* Solde (masquable) */
+const EYE='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.9 10.9 0 0 1 12 20c-7 0-11-8-11-8a19.8 19.8 0 0 1 5.06-5.94M9.9 4.24A10.9 10.9 0 0 1 12 4c7 0 11 8 11 8a19.9 19.9 0 0 1-3.17 4.19M14.12 14.12A3 3 0 1 1 9.88 9.88"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+let solde=0,cache=false;
+try{cache=localStorage.getItem("soldeCache")==="1"}catch(e){}
+const money=n=>n.toLocaleString("fr-FR")+" FCFA";
+function paintSolde(){
+  $("hSolde").textContent=cache?"••••••":money(solde);
+  $("rSolde").textContent=cache?"••••••":money(solde);
+  $("eye").innerHTML=cache?EYE_OFF:EYE;
+}
+$("eye").onclick=()=>{cache=!cache;try{localStorage.setItem("soldeCache",cache?"1":"0")}catch(e){}paintSolde()};
+
+/* Menu et pages */
+const VUES=["home","info","cartes","retrait","histo"];
+function openMenu(){$("drawer").classList.add("open");$("ov").classList.remove("hide")}
+function closeMenu(){$("drawer").classList.remove("open");$("ov").classList.add("hide")}
+function view(v){VUES.forEach(x=>$("v-"+x).classList.toggle("hide",x!==v));closeMenu();window.scrollTo(0,0)}
+$("menuBtn").onclick=openMenu;
+$("ov").onclick=closeMenu;
+document.querySelectorAll("#drawer button[data-v]").forEach(b=>b.onclick=()=>view(b.dataset.v));
+
+function showHome(d){
+  $("hNom").textContent=(d.prenom||"")+" "+(d.nom||"").toUpperCase();
+  $("hPays").textContent=flag(d.pays)+" "+(d.pays||"");
+  solde=Number(d.solde)||0;paintSolde();show("home");view("home");
+}
+
+/* Cartes inventées (images dessinées en SVG, une par carte) */
+const dots=Array.from({length:12},(_,i)=>'<circle cx="'+(190+(i%4)*30)+'" cy="'+(24+Math.floor(i/4)*30)+'" r="5"/>').join("");
+const PAT={
+  sun:'<circle cx="245" cy="45" r="60" fill="#fff" opacity=".18"/><circle cx="245" cy="45" r="34" fill="#fff" opacity=".18"/>',
+  waves:'<path d="M0 120Q40 90 80 120T160 120T240 120T320 120V180H0Z" fill="#fff" opacity=".16"/><path d="M0 145Q40 115 80 145T160 145T240 145T320 145V180H0Z" fill="#fff" opacity=".16"/>',
+  diamonds:'<g fill="#fff" opacity=".18"><path d="M230 10l40 40-40 40-40-40z"/><path d="M270 80l30 30-30 30-30-30z"/></g>',
+  rings:'<g fill="none" stroke="#fff" opacity=".22" stroke-width="3"><circle cx="250" cy="150" r="30"/><circle cx="250" cy="150" r="55"/><circle cx="250" cy="150" r="80"/></g>',
+  crown:'<path d="M190 105l15-48 25 30 25-30 15 48z" fill="#fff" opacity=".26"/>',
+  dots:'<g fill="#fff" opacity=".22">'+dots+'</g>'
+};
+function art(c1,c2,pat,name,n){
+  const g="g"+n;
+  return '<svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+name+'"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+c1+'"/><stop offset="1" stop-color="'+c2+'"/></linearGradient></defs><rect width="300" height="180" fill="url(#'+g+')"/>'+PAT[pat]+'<rect x="24" y="62" width="40" height="30" rx="6" fill="#fff" opacity=".85"/><text x="24" y="130" font-size="13" fill="#fff" opacity=".9" letter-spacing="3">•••• •••• •••• 2026</text><text x="24" y="160" font-size="17" font-weight="700" fill="#fff">'+name+'</text></svg>';
+}
+const CARTES=[
+  ["Carte Savane","#3b6ea5","#102a43","sun",5000],
+  ["Carte Baobab","#2a7f8e","#0b3340","waves",25000],
+  ["Carte Fleuve","#4a5d9e","#1b2a5c","diamonds",100000],
+  ["Carte Diamant","#6c7a89","#243342","rings",250000],
+  ["Carte Or Royal","#c9a227","#6b4f08","crown",500000]
+];
+$("listCartes").innerHTML=CARTES.map((c,i)=>'<div class="pc">'+art(c[1],c[2],c[3],c[0],i)+'<div class="pr"><span>'+c[0]+'</span><b>'+money(c[4])+'</b></div></div>').join("");
+
+/* Inscription */
+let busy=false;
+$("fSignup").onsubmit=async e=>{
+  e.preventDefault();
+  if(busy)return;
+  const prenom=$("prenom").value.trim(),nom=$("nom").value.trim(),pays=$("pays").value,email=$("email").value.trim(),pwd=$("pwd").value;
+  $("errS").textContent="";
+  if(!prenom||!nom||!pays){$("errS").textContent="Remplissez tous les champs.";return}
+  if(pwd.length<6){$("errS").textContent="Mot de passe trop court (6 caractères minimum).";return}
+  busy=true;$("bS").disabled=true;
+  let cred=null;
+  try{
+    cred=await createUserWithEmailAndPassword(auth,email,pwd);
+    const d={prenom,nom,pays,email,solde:0,createdAt:serverTimestamp()};
+    await setDoc(doc(db,"users",cred.user.uid),d);
+    showHome(d);
+  }catch(err){
+    if(cred&&cred.user){try{await cred.user.delete()}catch(x){}}
+    $("errS").textContent=cred?"Enregistrement impossible. Réessayez.":msg(err.code);
+  }
+  busy=false;$("bS").disabled=false;
+};
+
+/* Connexion */
+$("fLogin").onsubmit=async e=>{
+  e.preventDefault();
+  if(busy)return;
+  $("errL").textContent="";
+  busy=true;$("bL").disabled=true;
+  try{
+    const c=await signInWithEmailAndPassword(auth,$("email2").value.trim(),$("pwd2").value);
+    const s=await getDoc(doc(db,"users",c.user.uid));
+    if(!s.exists()){await signOut(auth);throw {code:"x"}}
+    showHome(s.data());
+  }catch(err){$("errL").textContent=msg(err.code)}
+  busy=false;$("bL").disabled=false;
+};
+
+/* Déconnexion */
+$("out").onclick=async()=>{await signOut(auth);$("pwd").value="";$("pwd2").value="";closeMenu();show("welcome")};
+
+/* Retrouver la session (aussi depuis un autre téléphone après connexion) */
+onAuthStateChanged(auth,async u=>{
+  if(busy)return;
+  if(!u){show("welcome");return}
+  if(u.isAnonymous){await signOut(auth);return}
+  try{
+    const s=await getDoc(doc(db,"users",u.uid));
+    if(s.exists())showHome(s.data());else{await signOut(auth);show("welcome")}
+  }catch(e){show("welcome")}
+});
+</script>
+</body>
+</html>
