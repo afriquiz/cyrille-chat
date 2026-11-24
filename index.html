@@ -66,6 +66,8 @@ h3.gt{margin:18px 0 10px;color:var(--g2);font-size:15px;text-transform:uppercase
 ul.inf{margin:8px 0 0;padding-left:18px}ul.inf li{margin:6px 0}
 .warn{background:#eef3fb;border-left:4px solid var(--g2);border-radius:10px;padding:12px 14px;margin-top:14px;font-size:14px;color:var(--txt)}
 .empty{text-align:center;color:var(--sub);padding:18px 8px}
+.arow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.arow b{color:var(--g1)}
 .hide{display:none!important}
 </style>
 </head>
@@ -125,6 +127,7 @@ ul.inf{margin:8px 0 0;padding-left:18px}ul.inf li{margin:6px 0}
     <button data-v="cartes">💳 Cartes disponibles</button>
     <button data-v="retrait">💸 Retrait</button>
     <button data-v="histo">🧾 Historique du retrait</button>
+    <button data-v="admin" id="admBtn" class="hide">🛡️ Administration</button>
   </nav>
   <main>
     <section id="v-home">
@@ -183,13 +186,23 @@ ul.inf{margin:8px 0 0;padding-left:18px}ul.inf li{margin:6px 0}
       <h2 class="vt">Historique du retrait</h2>
       <div class="card"><div class="empty">Aucun retrait pour le moment.</div></div>
     </section>
+    <section id="v-admin" class="hide">
+      <h2 class="vt">Administration</h2>
+      <div class="card">
+        <div class="hello">Utilisateurs inscrits</div>
+        <div class="big" id="admTotal">–</div>
+        <h3 class="gt">Par pays</h3>
+        <div id="admBox"></div>
+        <button class="btn green" id="admRef" style="max-width:none;margin-top:14px">Actualiser</button>
+      </div>
+    </section>
   </main>
 </div>
 
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,setDoc,getDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,setDoc,getDoc,serverTimestamp,collection,query,where,getCountFromServer} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAEFX47mtF62nMD0gnNS2UGu7jae7l6oT4",
@@ -201,6 +214,7 @@ const firebaseConfig = {
 };
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=i=>document.getElementById(i);
+const ADMIN="cyrilleidoniyi5@gmail.com";
 const SCR=["welcome","signup","login","home"];
 const show=id=>{SCR.forEach(s=>$(s).classList.toggle("hide",s!==id));window.scrollTo(0,0)};
 
@@ -246,13 +260,15 @@ function showHome(d){
   $("hNom").textContent=(d.prenom||"")+" "+(d.nom||"").toUpperCase();
   $("hPays").textContent=flag(d.pays)+" "+(d.pays||"");
   solde=Number(d.solde)||0;paintSolde();show("home");view("home");
+  const mail=((auth.currentUser&&auth.currentUser.email)||"").toLowerCase();
+  $("admBtn").classList.toggle("hide",mail!==ADMIN);
 }
 
 /* Menu et pages */
-const VUES=["home","infos","cartes","retrait","histo"];
+const VUES=["home","infos","cartes","retrait","histo","admin"];
 function openMenu(){$("drawer").classList.add("open");$("ov").classList.remove("hide")}
 function closeMenu(){$("drawer").classList.remove("open");$("ov").classList.add("hide")}
-function view(v){VUES.forEach(x=>$("v-"+x).classList.toggle("hide",x!==v));closeMenu();window.scrollTo(0,0)}
+function view(v){VUES.forEach(x=>$("v-"+x).classList.toggle("hide",x!==v));closeMenu();window.scrollTo(0,0);if(v==="admin")loadAdmin()}
 $("menuBtn").onclick=openMenu;
 $("ov").onclick=closeMenu;
 document.querySelectorAll("#drawer button[data-v]").forEach(b=>b.onclick=()=>view(b.dataset.v));
@@ -294,6 +310,26 @@ function renderCards(id,list,off){
 }
 renderCards("listBase",BASE,0);
 renderCards("listVip",VIP,10);
+
+/* Administration : nombre d'utilisateurs (réservé à l'administrateur par les règles Firebase) */
+async function loadAdmin(){
+  const box=$("admBox");
+  box.textContent="Chargement…";
+  try{
+    const users=collection(db,"users");
+    const tot=await getCountFromServer(query(users,where("solde",">=",0)));
+    const parts=await Promise.all(PAYS.map(p=>getCountFromServer(query(users,where("pays","==",p[1])))));
+    $("admTotal").textContent=tot.data().count;
+    box.textContent="";
+    PAYS.forEach((p,i)=>{
+      const r=document.createElement("div");r.className="arow";
+      const a=document.createElement("span");a.textContent=p[0]+" "+p[1];
+      const b=document.createElement("b");b.textContent=parts[i].data().count;
+      r.appendChild(a);r.appendChild(b);box.appendChild(r);
+    });
+  }catch(e){box.textContent="Impossible de charger. Vérifie que les règles Firebase sont publiées.";$("admTotal").textContent="–"}
+}
+$("admRef").onclick=loadAdmin;
 
 /* Inscription */
 let busy=false;
