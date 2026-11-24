@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b3d2e">
+<meta name="theme-color" content="#0f2540">
 <title>Cash Out Investissement</title>
 <style>
-:root{--g1:#0b3d2e;--g2:#14664a;--gold:#f2b705;--bg:#f3f6f4;--txt:#13231c;--sub:#5d6f66;--card:#fff;--err:#c62828}
+:root{--g1:#0f2540;--g2:#1f5fa8;--gold:#d6e6fb;--bg:#f3f5f9;--txt:#1b2433;--sub:#64708a;--card:#fff;--err:#c62828;--line:#e3e8f0}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
 body{background:var(--bg);color:var(--txt);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
@@ -17,14 +17,14 @@ body{background:var(--bg);color:var(--txt);font:16px/1.4 system-ui,-apple-system
 .hero h1 span{color:var(--gold)}
 .hero p{margin:0 0 28px;opacity:.9}
 .btn{display:block;width:100%;max-width:340px;border:0;border-radius:14px;padding:15px 18px;font-size:17px;font-weight:700;margin:8px auto;cursor:pointer}
-.btn.gold{background:var(--gold);color:#2a2100}
+.btn.gold{background:var(--gold);color:#0f2540}
 .btn.line{background:transparent;color:#fff;border:2px solid #fff}
 .btn.green{background:var(--g2);color:#fff}
 .form{width:100%;max-width:420px;margin:0 auto;padding:24px 20px}
 .form h2{margin:6px 0 4px;color:var(--g1)}
 .form p{margin:0 0 14px;color:var(--sub)}
 label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
-input,select{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid #cfdad4;border-radius:12px;background:#fff;color:var(--txt);outline:none}
+input,select{width:100%;padding:13px 14px;font-size:16px;border:1.5px solid #c9d3e0;border-radius:12px;background:#fff;color:var(--txt);outline:none}
 input:focus,select:focus{border-color:var(--g2)}
 .two{display:flex;gap:10px}.two>div{flex:1;min-width:0}
 .err{color:var(--err);min-height:22px;font-size:14px;margin-top:10px}
@@ -33,16 +33,39 @@ bar,header{display:flex}
 header{background:var(--g1);color:#fff;padding:14px 16px;align-items:center;justify-content:space-between;font-weight:800;letter-spacing:.3px}
 header button{background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:20px;padding:8px 14px;font-size:14px;cursor:pointer}
 main{padding:20px 16px;max-width:520px;width:100%;margin:0 auto}
-.card{background:var(--card);border-radius:20px;padding:22px;box-shadow:0 4px 18px rgba(11,61,46,.12)}
+.card{background:var(--card);border-radius:20px;padding:22px;box-shadow:0 4px 18px rgba(15,37,64,.12)}
 .hello{color:var(--sub);font-size:14px}
 .nom{font-size:24px;font-weight:800;color:var(--g1);margin:2px 0}
 .pays{color:var(--sub)}
-.sep{height:1px;background:#e3ebe6;margin:18px 0}
+.sep{height:1px;background:var(--line);margin:18px 0}
 .row{display:flex;align-items:center;justify-content:space-between}
 .row span{font-weight:700;color:var(--sub);text-transform:uppercase;font-size:13px;letter-spacing:1px}
-#eye{background:#eef4f0;border:0;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--g1)}
+#eye{background:#e6eefb;border:0;border-radius:50%;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--g1)}
 .solde{font-size:36px;font-weight:800;margin-top:6px;color:var(--txt)}
 .note{margin-top:16px;font-size:12px;color:var(--sub);text-align:center}
+header{gap:10px}
+header button{white-space:nowrap}
+.ttl{flex:1;text-align:left;font-size:13px;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20}
+.drawer{position:fixed;top:0;bottom:0;left:0;width:80%;max-width:310px;background:#fff;z-index:21;transform:translateX(-105%);transition:transform .25s;box-shadow:4px 0 20px rgba(0,0,0,.25);padding-top:env(safe-area-inset-top,0)}
+.drawer.open{transform:none}
+.dh{background:var(--g1);color:#fff;font-weight:800;padding:18px 20px;letter-spacing:1px}
+.drawer button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:16px 20px;font-size:16px;color:var(--txt);cursor:pointer}
+.drawer button:active{background:#e6eefb}
+h2.vt{margin:4px 0 4px;color:var(--g1)}
+.sub{color:var(--sub);font-size:13px;margin:0 0 14px}
+.grid{display:grid;gap:16px}
+.pc{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 14px rgba(15,37,64,.12)}
+.pc svg{display:block;width:100%;height:auto}
+.pr{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;gap:8px}
+.pr span{font-weight:700;color:var(--g1)}
+.pr b{background:#e6eefb;color:#0f2540;border-radius:20px;padding:6px 12px;font-size:14px;white-space:nowrap}
+.big{font-size:42px;font-weight:800;color:var(--g1)}
+.big small{font-size:16px;color:var(--sub);font-weight:600}
+h3.gt{margin:18px 0 10px;color:var(--g2);font-size:15px;text-transform:uppercase;letter-spacing:1px}
+ul.inf{margin:8px 0 0;padding-left:18px}ul.inf li{margin:6px 0}
+.warn{background:#eef3fb;border-left:4px solid var(--g2);border-radius:10px;padding:12px 14px;margin-top:14px;font-size:14px;color:var(--txt)}
+.empty{text-align:center;color:var(--sub);padding:18px 8px}
 .hide{display:none!important}
 </style>
 </head>
@@ -93,19 +116,73 @@ main{padding:20px 16px;max-width:520px;width:100%;margin:0 auto}
 </div>
 
 <div id="home" class="scr hide">
-  <header><span>CASH OUT INVESTISSEMENT</span><button id="out">Déconnexion</button></header>
+  <header><button id="menuBtn" aria-label="Ouvrir le menu">☰ Menu</button><span class="ttl">CASH OUT INVESTISSEMENT</span><button id="out">Quitter</button></header>
+  <div id="ov" class="ov hide"></div>
+  <nav id="drawer" class="drawer">
+    <div class="dh">MENU</div>
+    <button data-v="home">🏠 Accueil</button>
+    <button data-v="infos">ℹ️ Informations sur l’investissement</button>
+    <button data-v="cartes">💳 Cartes disponibles</button>
+    <button data-v="retrait">💸 Retrait</button>
+    <button data-v="histo">🧾 Historique du retrait</button>
+  </nav>
   <main>
-    <div class="card">
-      <div class="hello">Bonjour 👋</div>
-      <div class="nom" id="hNom"></div>
-      <div class="pays" id="hPays"></div>
-      <div class="sep"></div>
-      <div class="row"><span>Solde</span>
-        <button id="eye" aria-label="Afficher ou masquer le solde" title="Afficher / masquer"></button>
+    <section id="v-home">
+      <div class="card">
+        <div class="hello">Bonjour 👋</div>
+        <div class="nom" id="hNom"></div>
+        <div class="pays" id="hPays"></div>
+        <div class="sep"></div>
+        <div class="row"><span>Solde</span>
+          <button id="eye" aria-label="Afficher ou masquer le solde" title="Afficher / masquer"></button>
+        </div>
+        <div class="solde" id="hSolde">0 FCFA</div>
       </div>
-      <div class="solde" id="hSolde">0 FCFA</div>
-    </div>
-    <div class="note">Projet de classe : solde fictif (simulation), aucun argent réel.</div>
+      <div class="note">Projet de classe : solde fictif (simulation), aucun argent réel.</div>
+    </section>
+
+    <section id="v-infos" class="hide">
+      <h2 class="vt">Informations sur Cash Out Investissement</h2>
+      <div class="card">
+        <p style="margin:0 0 8px">Cash Out Investissement est un <b>projet pédagogique</b> réalisé pour le cours d’économie. Il permet de simuler :</p>
+        <ul class="inf">
+          <li>la création d’un compte et la consultation d’un solde fictif ;</li>
+          <li>la présentation de cartes d’investissement inventées ;</li>
+          <li>le fonctionnement d’un retrait (sans argent réel).</li>
+        </ul>
+        <h3 class="gt">Notions d’économie illustrées</h3>
+        <ul class="inf">
+          <li><b>Épargne</b> : mettre de l’argent de côté.</li>
+          <li><b>Investissement</b> : utiliser de l’argent aujourd’hui dans l’espoir d’un bénéfice plus tard.</li>
+          <li><b>Risque</b> : tout investissement peut faire perdre une partie ou la totalité du capital.</li>
+          <li><b>Diversification</b> : ne pas placer tout son argent au même endroit.</li>
+        </ul>
+        <div class="warn">Aucun gain n’est garanti. Ce site ne gère <b>aucun argent réel</b> : les cartes, les prix et le solde sont fictifs.</div>
+      </div>
+    </section>
+
+    <section id="v-cartes" class="hide">
+      <h2 class="vt">Cartes disponibles</h2>
+      <p class="sub">Cartes inventées pour l’exercice d’économie. Prix fictifs.</p>
+      <h3 class="gt">Cartes de base</h3>
+      <div class="grid" id="listBase"></div>
+      <h3 class="gt">Cartes VP</h3>
+      <div class="grid" id="listVip"></div>
+      <div class="note">Cartes et prix fictifs : aucun paiement n’est possible sur ce site.</div>
+    </section>
+
+    <section id="v-retrait" class="hide">
+      <h2 class="vt">Retrait</h2>
+      <div class="card">
+        <p style="margin:0">Cette page est une <b>simulation</b>. Le site ne gère aucun argent réel : aucune demande de retrait ne peut être envoyée.</p>
+        <div class="warn">Dans la vie réelle, un retrait passe par un établissement financier agréé.</div>
+      </div>
+    </section>
+
+    <section id="v-histo" class="hide">
+      <h2 class="vt">Historique du retrait</h2>
+      <div class="card"><div class="empty">Aucun retrait pour le moment.</div></div>
+    </section>
   </main>
 </div>
 
@@ -168,8 +245,55 @@ $("eye").onclick=()=>{cache=!cache;try{localStorage.setItem("soldeCache",cache?"
 function showHome(d){
   $("hNom").textContent=(d.prenom||"")+" "+(d.nom||"").toUpperCase();
   $("hPays").textContent=flag(d.pays)+" "+(d.pays||"");
-  solde=Number(d.solde)||0;paintSolde();show("home");
+  solde=Number(d.solde)||0;paintSolde();show("home");view("home");
 }
+
+/* Menu et pages */
+const VUES=["home","infos","cartes","retrait","histo"];
+function openMenu(){$("drawer").classList.add("open");$("ov").classList.remove("hide")}
+function closeMenu(){$("drawer").classList.remove("open");$("ov").classList.add("hide")}
+function view(v){VUES.forEach(x=>$("v-"+x).classList.toggle("hide",x!==v));closeMenu();window.scrollTo(0,0)}
+$("menuBtn").onclick=openMenu;
+$("ov").onclick=closeMenu;
+document.querySelectorAll("#drawer button[data-v]").forEach(b=>b.onclick=()=>view(b.dataset.v));
+
+/* Cartes inventées (images dessinées en SVG, une par carte) */
+const dots=Array.from({length:12},(_,i)=>'<circle cx="'+(190+(i%4)*30)+'" cy="'+(24+Math.floor(i/4)*30)+'" r="5"/>').join("");
+const PAT={
+  sun:'<circle cx="245" cy="45" r="60" fill="#fff" opacity=".22"/><circle cx="245" cy="45" r="34" fill="#fff" opacity=".22"/>',
+  waves:'<path d="M0 120Q40 90 80 120T160 120T240 120T320 120V180H0Z" fill="#fff" opacity=".2"/><path d="M0 145Q40 115 80 145T160 145T240 145T320 145V180H0Z" fill="#fff" opacity=".2"/>',
+  stripes:'<g stroke="#fff" opacity=".18" stroke-width="10"><path d="M-20 200L120-20M20 200L160-20M60 200L200-20M100 200L240-20M140 200L280-20M180 200L320-20"/></g>',
+  diamonds:'<g fill="#fff" opacity=".2"><path d="M230 10l40 40-40 40-40-40z"/><path d="M270 80l30 30-30 30-30-30z"/></g>',
+  dots:'<g fill="#fff" opacity=".24">'+dots+'</g>',
+  rings:'<g fill="none" stroke="#fff" opacity=".25" stroke-width="3"><circle cx="250" cy="150" r="30"/><circle cx="250" cy="150" r="55"/><circle cx="250" cy="150" r="80"/></g>',
+  triangles:'<g fill="#fff" opacity=".2"><path d="M200 0l50 90H150z"/><path d="M260 60l40 70h-80z"/></g>',
+  stars:'<text x="185" y="75" font-size="48" fill="#fff" opacity=".3">★★</text><text x="230" y="125" font-size="30" fill="#fff" opacity=".28">★</text>',
+  grid:'<g stroke="#fff" opacity=".2"><path d="M150 0V180M190 0V180M230 0V180M270 0V180M0 40H300M0 80H300M0 120H300"/></g>',
+  crown:'<path d="M190 105l15-48 25 30 25-30 15 48z" fill="#fff" opacity=".3"/>'
+};
+function art(c1,c2,pat,name,n){
+  const g="g"+n;
+  return '<svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+name+'"><defs><linearGradient id="'+g+'" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+c1+'"/><stop offset="1" stop-color="'+c2+'"/></linearGradient></defs><rect width="300" height="180" fill="url(#'+g+')"/>'+PAT[pat]+'<rect x="24" y="62" width="40" height="30" rx="6" fill="#fff" opacity=".85"/><text x="24" y="130" font-size="13" fill="#fff" opacity=".9" letter-spacing="3">•••• •••• •••• 2026</text><text x="24" y="160" font-size="17" font-weight="700" fill="#fff">'+name+'</text></svg>';
+}
+const BASE=[
+  ["Carte Savane","#3b82c4","#0f2540","sun",5000],
+  ["Carte Baobab","#0e8a8a","#073b4c","waves",10000],
+  ["Carte Sahel","#5b6b82","#1f2a3c","stripes",25000],
+  ["Carte Fleuve","#7a4ea3","#2d1b4e","diamonds",50000],
+  ["Carte Cacao","#b45f3c","#4a2312","dots",100000]
+];
+const VIP=[
+  ["Carte Or Royal","#c9a227","#6b4f00","crown",100000],
+  ["Carte Diamant","#7aa7e0","#1b2a6b","rings",200000],
+  ["Carte Émeraude","#2e9e7a","#0b3d33","triangles",350000],
+  ["Carte Saphir","#5b3fb5","#14123f","stars",500000],
+  ["Carte Platine","#aab4c0","#2b3440","grid",1000000]
+];
+function renderCards(id,list,off){
+  $(id).innerHTML=list.map((c,i)=>'<div class="pc">'+art(c[1],c[2],c[3],c[0],off+i)+'<div class="pr"><span>'+c[0]+'</span><b>'+c[4].toLocaleString("fr-FR")+' FCFA</b></div></div>').join("");
+}
+renderCards("listBase",BASE,0);
+renderCards("listVip",VIP,10);
 
 /* Inscription */
 let busy=false;
